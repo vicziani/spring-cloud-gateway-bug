@@ -1,0 +1,31 @@
+hosted:
+  port: 8080
+
+spring:
+  cloud:
+    gateway:
+#      filter:
+#        local-response-cache:
+#          enabled: false
+      routes:
+        - id: hello
+          uri: http://localhost:${hosted.port}
+          predicates:
+            - Path=/api/hello
+          filters:
+            - PrefixPath=/hosted
+            - LocalResponseCache=30m,500MB
+        - id: hello-name
+          uri: http://localhost:${hosted.port}
+          predicates:
+            - Path=/api/hello/{name}
+          filters:
+            - PrefixPath=/hosted
+#            - LocalResponseCache=0m,0MB
+
+logging:
+  level:
+    org:
+      springframework:
+        cloud:
+          gateway: debug
